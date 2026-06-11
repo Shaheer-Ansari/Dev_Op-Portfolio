@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev_Op — Roblox Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --void: #06060f;
+    --deep: #0d0d1f;
+    --panel: #111128;
+    --card: #16162f;
+    --border: #2a2a55;
+    --accent: #7c3aed;
+    --accent2: #a855f7;
+    --neon: #c084fc;
+    --gold: #f59e0b;
+    --cyan: #22d3ee;
+    --green: #4ade80;
+    --red: #f87171;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #475569;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── STAR CANVAS ── */
+  #stars-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 64px;
+    background: rgba(6,6,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--neon); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--green);
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    animation: float-glow 8s ease-in-out infinite;
+  }
+  @keyframes float-glow { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-30px) scale(1.05);} }
+
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fade-up 0.8s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fade-up 0.8s 0.4s forwards;
+  }
+
+  .hero-name .stroke {
+    -webkit-text-stroke: 2px var(--neon);
+    color: transparent;
+  }
+  .hero-name .fill {
+    background: linear-gradient(135deg, #fff 30%, var(--neon) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    opacity: 0;
+    animation: fade-up 0.8s 0.6s forwards;
+  }
+
+  .hero-years {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2.5rem;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 2rem;
+    padding: 6px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--neon);
+    opacity: 0;
+    animation: fade-up 0.8s 0.7s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fade-up 0.8s 0.9s forwards;
+  }
+
+  .btn-primary {
+    padding: 14px 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(124,58,237,0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 50px rgba(124,58,237,0.6);
+  }
+
+  .btn-outline {
+    padding: 13px 36px;
+    background: transparent;
+    color: var(--neon);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1.5px solid var(--neon);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-outline:hover {
+    background: rgba(192,132,252,0.1);
+    transform: translateY(-3px);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint svg { opacity: 0.5; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(6px);} }
+
+  @keyframes fade-up {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .section-title span {
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── DIVIDER LINE ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  /* ── EXPERTISE ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .skill-card.visible {
+    animation: fade-up 0.6s forwards;
+  }
+  .skill-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent2);
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover::before { opacity: 1; }
+
+  .skill-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .skill-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .skill-bar-wrap {
+    margin-top: 1rem;
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .skill-bar {
+    height: 100%;
+    border-radius: 2px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ── ROBLOX PROFILE BADGE ── */
+  .profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.75rem;
+    margin-top: 2rem;
+    text-decoration: none;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .profile-badge:hover {
+    border-color: var(--accent2);
+    transform: translateY(-3px);
+  }
+
+  .roblox-avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .roblox-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .profile-info .profile-username {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text);
+    display: block;
+  }
+  .profile-info .profile-platform {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .profile-badge-icon {
+    margin-left: auto;
+    color: var(--dim);
+    transition: color 0.3s;
+  }
+  .profile-badge:hover .profile-badge-icon { color: var(--neon); }
+
+  /* ── GAMES ── */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .game-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    opacity: 0;
+    transform: translateY(30px);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .game-card.visible { animation: fade-up 0.6s forwards; }
+  .game-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent2);
+    box-shadow: 0 20px 60px rgba(124,58,237,0.2);
+  }
+
+  .game-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .game-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  .game-card:hover .game-thumb img { transform: scale(1.06); }
+
+  .game-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+
+  .game-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(6,6,15,0.8) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+  }
+  .game-card:hover .game-overlay { opacity: 1; }
+
+  .game-play-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 4px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .game-body { padding: 1.25rem; }
+
+  .game-genre {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .game-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .game-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .game-stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  /* ── STATS BAR ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 4rem auto;
+  }
+
+  .stat-box {
+    background: var(--card);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--neon), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  /* ── CONTACT ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin-top: 3rem;
+  }
+
+  .contact-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+  .contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(124,58,237,0.15);
+  }
+
+  .contact-icon {
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .contact-info .contact-platform {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .contact-info .contact-handle {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .contact-roblox { border-color: rgba(34,211,238,0.2); }
+  .contact-roblox:hover { border-color: var(--cyan); }
+  .contact-roblox .contact-icon { background: rgba(34,211,238,0.12); }
+
+  .contact-discord { border-color: rgba(124,58,237,0.2); }
+  .contact-discord:hover { border-color: var(--accent2); }
+  .contact-discord .contact-icon { background: rgba(124,58,237,0.12); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2.5rem;
+    border-top: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  footer span {
+    color: var(--accent2);
+  }
+
+  /* ── FLOATING PARTICLES ── */
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+    animation: particle-float linear infinite;
+    opacity: 0;
+  }
+  @keyframes particle-float {
+    0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ── TYPEWRITER ── */
+  .typewriter {
+    display: inline-block;
+    overflow: hidden;
+    border-right: 2px solid var(--neon);
+    white-space: nowrap;
+    animation: blink-cursor 0.75s step-end infinite;
+  }
+  @keyframes blink-cursor { 50%{border-color:transparent;} }
+
+  /* ── HEX GRID BG ── */
+  .hex-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52' viewBox='0 0 60 52'%3E%3Cpolygon fill='none' stroke='rgba(124,58,237,0.06)' stroke-width='1' points='30,1 59,17 59,35 30,51 1,35 1,17'/%3E%3C/svg%3E");
+    background-size: 60px 52px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    nav { padding: 0 1.2rem; }
+    .nav-links { display: none; }
+    .hero { padding: 5rem 1.5rem 4rem; }
+    section { padding: 4rem 1.5rem; }
+    .hero-glow { width: 400px; height: 400px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- FLOATING PARTICLES -->
+<div id="particles-container"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">DEV_OP</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#expertise">Skills</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    AVAILABLE FOR HIRE
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="about">
+  <div class="hex-bg"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-tag">🎮 Roblox Developer Portfolio</div>
+
+  <h1 class="hero-name">
+    <span class="stroke">DEV</span>
+    <span class="fill">_Op</span>
+  </h1>
+
+  <p class="hero-subtitle">
+    <span class="typewriter" id="typewriter-text">Scripting · GUI · GFX · Building</span>
+  </p>
+
+  <div class="hero-years">
+    ⭐ &nbsp; 5 Years on the Platform &nbsp; · &nbsp; Expert Developer
+  </div>
+
+  <div class="hero-cta">
+    <a href="#games" class="btn-primary">View My Games</a>
+    <a href="#contact" class="btn-outline">Get In Touch</a>
+  </div>
+
+  <div class="scroll-hint">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    Scroll
+  </div>
+</div>
+
+<!-- STATS -->
+<div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem;">
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-num" data-count="5">0</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" data-count="4">0</div>
+      <div class="stat-label">Published Games</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" data-count="4">0</div>
+      <div class="stat-label">Skills Mastered</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" data-suffix="%">100</div>
+      <div class="stat-label">Dedication</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- EXPERTISE -->
+<section id="expertise">
+  <div class="section-label">// WHAT I DO</div>
+  <h2 class="section-title">My <span>Expertise</span></h2>
+  <p style="color:var(--muted);max-width:520px;font-size:0.95rem;line-height:1.7;">
+    I craft complete Roblox experiences — from the engine scripts that power the game logic,
+    to the pixel-perfect UI, the custom visuals, and the worlds players explore.
+  </p>
+
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon" style="background:rgba(124,58,237,0.15);">⚙️</div>
+      <div class="skill-name">Scripting</div>
+      <div class="skill-desc">Advanced Lua scripting — game mechanics, datastores, remote events, server-client architecture, and complex systems.</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="background:linear-gradient(90deg,#7c3aed,#c084fc);" data-width="95"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon" style="background:rgba(34,211,238,0.12);">🖥️</div>
+      <div class="skill-name">GUI Design</div>
+      <div class="skill-desc">Sleek, intuitive user interfaces. Animated menus, HUDs, inventory systems, and polished screen GUIs built for maximum UX.</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="background:linear-gradient(90deg,#22d3ee,#67e8f9);" data-width="90"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon" style="background:rgba(245,158,11,0.12);">🎨</div>
+      <div class="skill-name">GFX Design</div>
+      <div class="skill-desc">High-quality Roblox GFX — thumbnails, banners, promotional art. Professional renders that make games stand out on the platform.</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="background:linear-gradient(90deg,#f59e0b,#fbbf24);" data-width="88"></div></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon" style="background:rgba(74,222,128,0.12);">🏗️</div>
+      <div class="skill-name">Building</div>
+      <div class="skill-desc">Immersive world building — from obstacle courses and nature landscapes to full game environments with attention to detail and atmosphere.</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="background:linear-gradient(90deg,#4ade80,#86efac);" data-width="93"></div></div>
+    </div>
+  </div>
+
+  <!-- Roblox Profile -->
+  <a href="https://www.roblox.com/users/search?keyword=rayanansari1" target="_blank" class="profile-badge" style="text-decoration:none;">
+    <div class="roblox-avatar">
+      <img src="https://www.roblox.com/headshot-thumbnail/image?userId=rayanansari1&width=420&height=420&format=png" 
+           alt="Dev_Op Roblox Avatar"
+           onerror="this.style.display='none';this.parentElement.innerHTML='🎮'">
+    </div>
+    <div class="profile-info">
+      <span class="profile-username">@Dev_Op</span>
+      <span class="profile-platform">Roblox · 5 Years on Platform</span>
+    </div>
+    <svg class="profile-badge-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<!-- GAMES -->
+<section id="games">
+  <div class="section-label">// PORTFOLIO</div>
+  <h2 class="section-title">My <span>Games</span></h2>
+  <p style="color:var(--muted);max-width:520px;font-size:0.95rem;line-height:1.7;margin-bottom:1rem;">
+    Polished, high-quality Roblox experiences built from the ground up. Each game showcases a different facet of my craft.
+  </p>
+
+  <div class="games-grid">
+
+    <!-- Star War Obby -->
+    <a href="https://www.roblox.com/games/123249202804356/Star-War-Obby" target="_blank" class="game-card">
+      <div class="game-thumb">
+        <img src="https://tr.rbxcdn.com/6d9ae1dc8e2793d60fc5cac3d8e8a8e7/768/432/Image/Png"
+             alt="Star War Obby"
+             onerror="this.style.display='none';this.parentElement.querySelector('.game-thumb-placeholder').style.display='flex'">
+        <div class="game-thumb-placeholder" style="display:none;background:linear-gradient(135deg,#1a1a3e,#3b1f6e);">⚔️</div>
+        <div class="game-overlay"><div class="game-play-btn">▶ Play Now</div></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Obby · Adventure</div>
+        <div class="game-title">Star War Obby</div>
+        <div style="font-size:0.83rem;color:var(--muted);line-height:1.5;">A galaxy-themed obstacle course — navigate through starships, laser fields, and epic space battles.</div>
+        <div class="game-meta">
+          <span class="game-stat">🚀 Space Theme</span>
+          <span class="game-stat">⭐ Scripting</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- StealL -->
+    <a href="https://www.roblox.com/games/81341612297699/steaaaaL" target="_blank" class="game-card">
+      <div class="game-thumb">
+        <img src="https://tr.rbxcdn.com/placeholder/768/432/Image/Png"
+             alt="SteaaaaL"
+             onerror="this.style.display='none';this.parentElement.querySelector('.game-thumb-placeholder').style.display='flex'">
+        <div class="game-thumb-placeholder" style="display:none;background:linear-gradient(135deg,#1c1c1c,#2d2d2d);">💎</div>
+        <div class="game-overlay"><div class="game-play-btn">▶ Play Now</div></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Action · Stealth</div>
+        <div class="game-title">SteaaaaL</div>
+        <div style="font-size:0.83rem;color:var(--muted);line-height:1.5;">A high-stakes stealth experience. Plan your heist, dodge the guards, and steal the prize.</div>
+        <div class="game-meta">
+          <span class="game-stat">🔒 Stealth</span>
+          <span class="game-stat">⭐ GUI + Script</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Jungle Jumps -->
+    <a href="https://www.roblox.com/games/83740519188852/Jungle-jumps" target="_blank" class="game-card">
+      <div class="game-thumb">
+        <img src="https://tr.rbxcdn.com/placeholder2/768/432/Image/Png"
+             alt="Jungle Jumps"
+             onerror="this.style.display='none';this.parentElement.querySelector('.game-thumb-placeholder').style.display='flex'">
+        <div class="game-thumb-placeholder" style="display:none;background:linear-gradient(135deg,#0d2e0d,#1a5c1a);">🌿</div>
+        <div class="game-overlay"><div class="game-play-btn">▶ Play Now</div></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Obby · Nature</div>
+        <div class="game-title">Jungle Jumps</div>
+        <div style="font-size:0.83rem;color:var(--muted);line-height:1.5;">Leap through an immersive jungle world filled with lush environments, tricky platforms, and wild traps.</div>
+        <div class="game-meta">
+          <span class="game-stat">🌴 Building</span>
+          <span class="game-stat">⭐ Environment</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Nature Obby -->
+    <a href="https://www.roblox.com/games/73099465254080/Nature-Obby" target="_blank" class="game-card">
+      <div class="game-thumb">
+        <img src="https://tr.rbxcdn.com/placeholder3/768/432/Image/Png"
+             alt="Nature Obby"
+             onerror="this.style.display='none';this.parentElement.querySelector('.game-thumb-placeholder').style.display='flex'">
+        <div class="game-thumb-placeholder" style="display:none;background:linear-gradient(135deg,#0a2010,#154c28);">🌲</div>
+        <div class="game-overlay"><div class="game-play-btn">▶ Play Now</div></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Obby · Relaxing</div>
+        <div class="game-title">Nature Obby</div>
+        <div style="font-size:0.83rem;color:var(--muted);line-height:1.5;">A serene nature-themed obstacle course with hand-crafted environments that blend challenge with beauty.</div>
+        <div class="game-meta">
+          <span class="game-stat">🍃 Atmosphere</span>
+          <span class="game-stat">⭐ Building</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">// REACH ME</div>
+  <h2 class="section-title">Let's <span>Connect</span></h2>
+  <p style="color:var(--muted);max-width:520px;font-size:0.95rem;line-height:1.7;">
+    Want to collaborate on a Roblox project, commission work, or just say hi? Hit me up on Roblox or Discord.
+  </p>
+
+  <div class="contact-grid">
+    <a href="https://www.roblox.com/users/search?keyword=rayanansari1" target="_blank" class="contact-card contact-roblox">
+      <div class="contact-icon" style="background:rgba(34,211,238,0.12);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#22d3ee" stroke-width="2"/><path d="M8 8h8l-2 4h-4l-2 4h8" stroke="#22d3ee" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="contact-info">
+        <div class="contact-platform">Roblox</div>
+        <div class="contact-handle" style="color:var(--cyan);">rayanansari1</div>
+      </div>
+      <svg style="margin-left:auto;color:var(--dim);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+
+    <div class="contact-card contact-discord" style="cursor:default;">
+      <div class="contact-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#a855f7"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      </div>
+      <div class="contact-info">
+        <div class="contact-platform">Discord</div>
+        <div class="contact-handle" style="color:var(--accent2);">shaheero.</div>
+      </div>
+      <svg style="margin-left:auto;color:var(--dim);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+    </div>
+  </div>
+
+  <div style="margin-top:3rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2rem;text-align:center;">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:3px;color:var(--accent2);margin-bottom:0.75rem;">// OPEN TO</div>
+    <div style="font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:1rem;">Commissions &amp; Collaborations</div>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:460px;margin:0 auto 1.5rem;line-height:1.7;">
+      Looking for a skilled Roblox developer to join your team or build your next big game? Let's make something great together.
+    </p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem;">
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.25);border-radius:2rem;padding:6px 18px;font-size:0.82rem;color:var(--neon);">⚙️ Scripting Commissions</span>
+      <span style="background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:2rem;padding:6px 18px;font-size:0.82rem;color:var(--cyan);">🖥️ GUI Design</span>
+      <span style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:2rem;padding:6px 18px;font-size:0.82rem;color:var(--gold);">🎨 GFX Work</span>
+      <span style="background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:2rem;padding:6px 18px;font-size:0.82rem;color:var(--green);">🏗️ Building</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="margin-bottom:0.5rem;">
+    <span style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#c084fc,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">DEV_OP</span>
+  </div>
+  Roblox Developer · 5 Years Experience · <span>rayanansari1</span> on Roblox · <span>shaheero.</span> on Discord
+  <div style="margin-top:0.75rem;opacity:0.4;">© 2025 Dev_Op · All Rights Reserved</div>
+</footer>
+
+<script>
+// ── STAR CANVAS ──
+const canvas = document.getElementById('stars-canvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function createStars() {
+  stars = [];
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.2,
+      o: Math.random(),
+      speed: Math.random() * 0.3 + 0.05,
+      twinkleSpeed: Math.random() * 0.02 + 0.005
+    });
+  }
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(s => {
+    s.o += s.twinkleSpeed;
+    const opacity = 0.3 + Math.sin(s.o) * 0.3;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(192,132,252,${opacity})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+
+resizeCanvas();
+createStars();
+drawStars();
+window.addEventListener('resize', () => { resizeCanvas(); createStars(); });
+
+// ── FLOATING PARTICLES ──
+const container = document.getElementById('particles-container');
+const colors = ['#7c3aed','#a855f7','#22d3ee','#4ade80','#f59e0b'];
+
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 4 + 2;
+  p.style.cssText = `
+    left: ${Math.random() * 100}%;
+    width: ${size}px;
+    height: ${size}px;
+    background: ${colors[Math.floor(Math.random()*colors.length)]};
+    animation-duration: ${Math.random() * 15 + 10}s;
+    animation-delay: ${Math.random() * 10}s;
+    opacity: 0;
+    box-shadow: 0 0 ${size*2}px currentColor;
+  `;
+  container.appendChild(p);
+}
+
+// ── TYPEWRITER ──
+const phrases = ['Scripting Expert', 'GUI Specialist', 'GFX Artist', 'Master Builder', 'Roblox Developer'];
+let phraseIdx = 0, charIdx = 0, deleting = false;
+const tw = document.getElementById('typewriter-text');
+
+function typewriter() {
+  const phrase = phrases[phraseIdx];
+  if (!deleting) {
+    tw.textContent = phrase.slice(0, ++charIdx);
+    if (charIdx === phrase.length) { deleting = true; setTimeout(typewriter, 2000); return; }
+  } else {
+    tw.textContent = phrase.slice(0, --charIdx);
+    if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+  }
+  setTimeout(typewriter, deleting ? 60 : 100);
+}
+setTimeout(typewriter, 1200);
+
+// ── SCROLL ANIMATIONS ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Animate skill bars
+      if (e.target.classList.contains('skill-card')) {
+        const bar = e.target.querySelector('.skill-bar');
+        if (bar) setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.skill-card, .game-card').forEach(el => observer.observe(el));
+
+// ── COUNT UP ANIMATION ──
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseInt(el.dataset.count);
+      const suffix = el.dataset.suffix || '+';
+      let count = 0;
+      const interval = setInterval(() => {
+        count++;
+        el.textContent = count + suffix;
+        if (count >= target) clearInterval(interval);
+      }, 100);
+      countObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-count]').forEach(el => {
+  el.textContent = '0';
+  countObserver.observe(el);
+});
+
+// Fix the 100% stat (no count attr)
+const dedStat = document.querySelector('[data-suffix="%"]');
+if (dedStat) {
+  dedStat.textContent = '100%';
+}
+
+// ── GAME CARD STAGGER ──
+const gameCards = document.querySelectorAll('.game-card');
+gameCards.forEach((card, i) => {
+  card.style.animationDelay = `${i * 0.1}s`;
+});
+
+const skillCards = document.querySelectorAll('.skill-card');
+skillCards.forEach((card, i) => {
+  card.style.animationDelay = `${i * 0.1}s`;
+});
+
+// ── NAV ACTIVE ──
+const sections = document.querySelectorAll('section[id], div[id="about"]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--neon)' : '';
+  });
+});
+</script>
+</body>
+</html>
